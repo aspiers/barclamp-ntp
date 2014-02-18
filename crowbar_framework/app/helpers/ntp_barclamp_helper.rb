@@ -20,7 +20,7 @@ module NtpBarclampHelper
     {
       "ntp-server" => {
         "unique" => true,
-        "count" => 1,
+        "count" => -1,
         "admin" => true
       },
       "ntp-client" => {

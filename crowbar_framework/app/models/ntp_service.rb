@@ -29,7 +29,20 @@ class NtpService < ServiceObject
   end
 
   def validate_proposal_after_save proposal
-    validate_one_for_role proposal, "ntp-server"
+    elements = proposal["deployment"]["pacemaker"]["elements"]
+
+    # accept proposal with no allocated node -- ie, initial state
+    if not elements.has_key?("ntp-server") and
+       not elements.has_key?("ntp-client")
+       return
+    end
+
+    if elements["ntp-server"].length > 1 and
+       proposal["attributes"]["ntp"]["external_servers"].length == 0
+      validation_error \
+        "You must set the external_servers attribute before " \
+        "assigning the ntp-server role to multiple nodes"
+    end
 
     super
   end
